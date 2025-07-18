@@ -1,5 +1,14 @@
 @Component
 	@RestController
 	@Controller
-	@Service
+	@Service  -->@Service(value="")
 	@Repositiory
+
+@Primary
+@AutoWired
+
+@Configuration
+
+@Bean
+@Profile("dev")
+
