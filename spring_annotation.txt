@@ -1,4 +1,7 @@
-@Component
+Training By Rajeev Sir
+
+
+@Component  --> mainly used to implement spring framework three layer architecture
 	@RestController
 	@Controller
 	@Service  -->@Service(value="")
@@ -6,9 +9,44 @@
 
 @Primary
 @AutoWired
-
 @Configuration
-
 @Bean
 @Profile("dev")
+
+
+
+
+
+// Annotation related to REST API
+@SpringBootApplication
+@RestController  
+--> Made with @Controller and @ResponseBody(work as a jackson parser)
+-->@ResponseBody: Convert Java object to JSON format
+-->@RequestBody : cONVER json TO Java object
+
+
+
+@RequestMapping(path="api")     --> to provide
+@GetMapping (path="products")    -->to expose rest api path
+@PostMapping(path="products/{id}")
+@PathVariable                      --Raste ka variable rats
+@RequestParam                        -->Request param  (used for pagination)
+
+
+
+
+For Spring profile 
+-Dspring.profiles.active=prod
+    
+
+Inside application.properties file
+we can change port
+server.port=9090
+
+
+-->To changer banner
+spring.banner.location=classpath:banner.txt
+
+
+
 
