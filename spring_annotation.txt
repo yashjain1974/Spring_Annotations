@@ -1,0 +1,5 @@
+@Component
+	@RestController
+	@Controller
+	@Service
+	@Repositiory
