@@ -21,3 +21,21 @@ JpaRepository
 
 
 
+
+ResponseEntity --> data +status code
+
+200 : ok
+201: resource is created
+204: deleted
+
+400:validation error
+401: authentication   -->Who are you
+403: authorization     -->I know who are you ? Are you authorize to access this particular resources
+404: Not found 
+
+
+500: Internal server
+
+
+
+
