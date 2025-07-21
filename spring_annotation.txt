@@ -99,6 +99,40 @@ added : mysql+jpa dependency
 @Component  -->if we want any class to declare bean component
 
 
+---------------Aspected Oriented Programming-----------------
+
+@EnableAspectJAutoProxy  --> Spring +Aspect
+
+@Aspect --> advice +pointcut
+
+
+@Pointcut("execution(public void doMagic()):)
+
+@After("foo()")
+@AfterReturning
+@AfterThrowing(vlaue="execution(public void do Magic())",
+public void calpping(Excepection.getMessage()){
+}
+
+@Before
+
+
+-------------------------------Exception Handling----------------------------
+
+@RestControllerAdvice
+
+@ExceptionHandler(ProductNotFoundException.class)
+
+
+
+
+
+
+
+
+
+
+
 
 
 
