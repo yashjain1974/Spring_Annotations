@@ -1,6 +1,19 @@
 Training By Rajeev Sir
 
 
+Day 1: 
+
+Basic 3-tier architecture
+
+1)com.productApp.controller
+2)com.productApp.service
+3)com.productApp.repository
+
+-->extras
+for Db
+4)com.productApp.models
+
+
 @Component  --> mainly used to implement spring framework three layer architecture
 	@RestController     -->For full stack (REST)
 	@Controller           -->for jsp
@@ -26,13 +39,16 @@ Training By Rajeev Sir
 
 
 
+
+//Day 2 
+
 @RequestMapping(path="api")     --> to provide
 @GetMapping (path="products")    -->to expose rest api path
 @PostMapping(path="products/{id}")
 @PathVariable                      --Raste ka variable rats
 @RequestParam                        -->Request param  (used for pagination)
 @ResponseEntity  
-@Transactional  -->declaratrive 
+@Transactional  -->declaratrive   It Provide ACID
 
 
 
@@ -51,7 +67,7 @@ spring.banner.location=classpath:banner.txt
 
 -->connecting with database
 
-spring.datasource.url=jdbc:mysql://localhost:3306/demoms?useSSL=false
+spring.datasource.url=jdbc:mysql://localhost:3306/productAppDb?useSSL=false
 spring.datasource.username=root
 spring.datasource.password=root
 spring.datasource.driver-class-name=com.mysql.cj.jdbc.Driver
@@ -62,6 +78,8 @@ logging.level.org.hibernate: ERROR
 spring.jpa.show-sql=true
 spring.jpa.properties.hibernate.format_sql=true
 
+server.servlet.context-path=/productapp  --> 
+
 
 
 @Configuration -->: This tells Spring that this class is a source of configuration. It contains instructions for how the application should be set up, specifically by defining "Beans" (which we'll see next).
@@ -69,6 +87,20 @@ spring.jpa.properties.hibernate.format_sql=true
 @EnableWebSecurity  -->This is the master switch that turns on Spring Security's web security features. Without this, all the other security rules would be ignored.
 
 @Bean --> This annotation on a method tells Spring: "Hey, run this method and take the object it returns and manage it for me." This managed object is called a Bean.
+
+
+//Day 3
+
+Problem Statement : We want to use database
+
+added : mysql+jpa dependency
+
+
+@Component  -->if we want any class to declare bean component
+
+
+
+
 
 
 

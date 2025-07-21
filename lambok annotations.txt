@@ -1,0 +1,19 @@
+--> To remove Boiler plate code
+
+@Getter -->to declare all getters  (remove boiler plate code)
+
+@Setter  --> 
+
+@ToString
+
+--> For constructors
+
+@NoArgsConstructor   
+
+@AllArgsConstructor
+
+
+@Builder
+
+
+@Data   -->This annotation paste all the code of @Getter @Setter @ToString @NoArgsConstructor 

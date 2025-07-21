@@ -14,7 +14,10 @@ private Collection<? extends GrantedAuthority> authorities;
 
 -->? extends GrantedAuthority: This is a generic wildcard. It means the collection can hold any type of object that is a subclass of GrantedAuthority.
 
-GrantedAuthority: This is a core interface in Spring Security. It represents a permission granted to the user. The most common implementation is 
+GrantedAuthority: This is a core interface in Spring Security. It represents a permission granted to the user. The most common implementation is
+
+JpaRepository
+--> JpaRepository is a specific interface from the Spring Data JPA library. It's designed to make database operations incredibly easy by providing a complete set of standard methods for working with a database entity.
 
 
 
