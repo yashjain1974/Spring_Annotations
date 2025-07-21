@@ -2,9 +2,9 @@ Training By Rajeev Sir
 
 
 @Component  --> mainly used to implement spring framework three layer architecture
-	@RestController
-	@Controller
-	@Service  -->@Service(value="")
+	@RestController     -->For full stack (REST)
+	@Controller           -->for jsp
+	@Service  		-->@Service(value="")
 	@Repositiory
 
 @Primary
@@ -61,6 +61,16 @@ logging.level.org.springframework.web: DEBUG
 logging.level.org.hibernate: ERROR
 spring.jpa.show-sql=true
 spring.jpa.properties.hibernate.format_sql=true
+
+
+
+@Configuration -->: This tells Spring that this class is a source of configuration. It contains instructions for how the application should be set up, specifically by defining "Beans" (which we'll see next).
+
+@EnableWebSecurity  -->This is the master switch that turns on Spring Security's web security features. Without this, all the other security rules would be ignored.
+
+@Bean --> This annotation on a method tells Spring: "Hey, run this method and take the object it returns and manage it for me." This managed object is called a Bean.
+
+
 
 
 
