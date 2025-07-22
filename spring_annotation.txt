@@ -123,9 +123,52 @@ public void calpping(Excepection.getMessage()){
 
 @ExceptionHandler(ProductNotFoundException.class)
 
+@Value   -->for dependency injection of String and variables just like Autowired in Object  
+@Value("${app.info}")
+
+
+--> 
+@EnableConfigurationProperties(DataDeto.class)     -->Mandatory to enable bootstrap yaml file in project
+@ConfigurationProperties(prefix = "account")  -->tO ENABLE READING OF YAML FILE
+
+It automatically binds configuration properties from your application.yml or application.properties file to the fields of a Java class.
+
+
+------------------------------------------Yaml file------------------------------
+
+spring:
+  application:
+    name: bankapp
+
+account:
+  message: "Welcome to ProductApp account manager"
+  contactDetails:   //HashMap
+    name: "Raj"     //key value
+    email: "rgupta.mtech@gmail.com"
+  onCallSupport:           //Array
+    - "(+91) 54645-464556"    //Array element
+    - "(+91) 75765-777677"     
 
 
 
+--------------------------------OpenAPI 3.0 -------------------------
+
+Dependency:
+
+ <dependency>
+            <groupId>org.springdoc</groupId>
+            <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
+            <version>2.5.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springdoc</groupId>
+            <artifactId>springdoc-openapi-starter-webmvc-api</artifactId>
+            <version>2.5.0</version>
+        </dependency>
+
+
+
+--------------------------------Bean-----------------------------------
 
 
 

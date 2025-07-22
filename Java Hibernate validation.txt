@@ -1,0 +1,42 @@
+-----------------------------------Java Hibernate validation--------------------------\
+-->Download validation dipendency from sprint starter
+
+import jakarta.validation.constraints.*;
+
+@NotNull(message = "product name can not be null")
+@Pattern(regexp = "[A-Za-z]+( [A-Za-z]+)*", message = "{product.name.invalid}")
+@Range(min = 10, max = 300_000, message = "Prodcuct price should be in range")
+@Valid           -->on Controller layer inside function parameter
+
+
+@ExceptionHandler(MethodArgumentNotValidException.class)
+	public ResponseEntity<ErrorMessageDto> handle400(MethodArgumentNotValidException ex) {
+		String errorMessage=ex.getBindingResult()
+				.getAllErrors()
+				.stream()
+				.map(e->e.getDefaultMessage())
+				.collect(Collectors.joining(", "));
+		ErrorMessageDto errorResponse = new ErrorMessageDto(errorMessage , 400,"8249824289", LocalDateTime.now());
+		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
+	}
+
+
+
+-->new file which store validaion string
+
+ValidationMessages.properties
+
+product.productName.absent=productName can not be null!
+
+
+--> XML/JSON accept message
+
+	     <dependency>
+		<groupId>com.fasterxml.jackson.dataformat</groupId>
+			<artifactId>jackson-dataformat-xml</artifactId>
+	     </dependency>
+
+@GetMapping(path = "products",produces = {MediaType.APPLICATION_JSON_VALUE,MediaType.APPLICATION_XML_VALUE})
+
+
+app.info=productapp default profile
