@@ -1,0 +1,164 @@
+Basic Code
+
+producer:
+
+public void produce(String message) {
+		log.info("message is sent to the kafka server");
+		CompletableFuture<SendResult<String, String>> future = kafkaTemplate.send("mynewtopic", message); // fire and
+		future.whenComplete((result, ex) -> {
+			if (ex == null) {
+				log.info("Data is got" + result.getRecordMetadata().hasOffset());
+				log.info("Data is got" + result.getRecordMetadata().partition());
+			} else {
+				log.error(ex.getMessage());
+			}
+		}); // forget ,
+			// Non
+			// blocking
+	}
+
+@RestController
+public class ProducerController {
+	@Autowired
+	private ProducerService producerService;
+	
+	@PostMapping(path="orders")
+	public ResponseEntity<String> sendMessage(@RequestBody Order order) {
+			producerService.produce(order);
+		
+		return ResponseEntity.status(HttpStatus.ACCEPTED).body(order.toString()+"/n sent successfully");		
+	}
+
+}
+
+application.yaml
+-->telling kafka that your key is string but object is json serilaizable
+server:
+  port: 8080
+spring:
+  kafka:
+    bootstrap-servers: localhost:9092
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+
+
+TopicConfig.java
+-->Code for Configuration of kafka consumer where we can declafre serializable instead of yaml file (Alternative way)
+
+
+@Configuration
+public class KafkaProducerConfig {
+
+    @Bean
+    public NewTopic createTopic(){
+        return new NewTopic("busycoder-demo", 3, (short) 1);
+    }
+
+    @Bean
+    public Map<String,Object> producerConfig(){
+        Map<String,Object> props=new HashMap<>();
+        props.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG,
+                "localhost:9092");
+        props.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG,
+                StringSerializer.class);
+        props.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG,
+                JsonSerializer.class);
+        return props;
+    }
+
+    @Bean
+    public ProducerFactory<String,Object> producerFactory(){
+        return new DefaultKafkaProducerFactory<>(producerConfig());
+    }
+
+    @Bean
+    public KafkaTemplate<String,Object> kafkaTemplate(){
+        return new KafkaTemplate<>(producerFactory());
+    }
+
+}
+
+        
+
+consumer:
+
+@Service
+public class ConsumerService {
+	@KafkaListener(topics = "mynewtopic", groupId = "my_topic_group_id")
+	public void consume(String message) {
+		System.out.println(message);
+	}
+
+}
+
+//To distribute toi specific partition
+@KafkaListener(topics="mynewtopic",groupId = "my_topic_group_id",
+			topicPartitions = {@TopicPartition(topic="mynewtopic",partitions = {"1"})})
+	public void consumeP1(String message) {
+		
+		System.out.println(message);
+		log.info("Message is consumed at partition 1 "+ message);
+	}
+
+
+application.yaml
+
+server:
+  port: 9090
+
+spring:
+  kafka:
+    bootstrap-servers: localhost:9092
+    consumer:
+      # A group-id is essential for any consumer
+      group-id: my-group-id
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+      properties:
+        # Trust packages to allow the JsonDeserializer to work
+        spring.json.trusted.packages: "*"
+
+
+
+
+Code for Configuration of kafka consumer where we can declafre serializable instead of yaml file (Alternative way)
+
+
+
+@Configuration
+public class TopicConfig {
+
+	@Bean
+	public NewTopic newTopic() {
+		return new NewTopic("mynewtopic", 3, (short) 1);
+	}
+	
+	 @Bean
+	    public Map<String, Object> consumerConfig() {
+	        Map<String, Object> props = new HashMap<>();
+	        props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG,
+	                "localhost:9092");
+	        props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG,
+	                StringDeserializer.class);
+	        props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG,
+	                JsonDeserializer.class);
+	        props.put(JsonDeserializer.TRUSTED_PACKAGES, "*");
+	        return props;
+	    }
+
+	    @Bean
+	    public ConsumerFactory<String,Object> consumerFactory(){
+	        return new DefaultKafkaConsumerFactory<>(consumerConfig());
+	    }
+
+	    @Bean
+	    public KafkaListenerContainerFactory<ConcurrentMessageListenerContainer<String, Object>>
+	        kafkaListenerContainerFactory() {
+	        ConcurrentKafkaListenerContainerFactory<String, Object> factory =
+	                new ConcurrentKafkaListenerContainerFactory<>();
+	        factory.setConsumerFactory(consumerFactory());
+	        return factory;
+	    }
+
+}

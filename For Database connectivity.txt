@@ -23,6 +23,8 @@ spring.jpa.properties.hibernate.format_sql=true
 
 -------------------For Oracle DB connection----------------------
 
+mvn install:install-file -Dfile=ojdbc10.jar -DgroupId=com.oracle.database.jdbc -DartifactId=ojdbc10 -Dversion=19.3.0.0 -Dpackaging=jar
+
 --> application.properties
 
 

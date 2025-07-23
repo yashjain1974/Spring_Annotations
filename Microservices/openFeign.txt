@@ -1,0 +1,93 @@
+----------Open Feign-----------
+In main app
+
+
+@EnableFeignClients("package com.app_A.proxyservice")
+
+
+@FeignClient(url="http://localhost:8081",name="product-client")
+public interface ProductProxyService {
+	
+	@GetMapping(path="products/{id}")
+	public Product getById(@PathVariable int id);
+
+}
+
+
+
+---------------RestTemplate---------------------------
+
+@SpringBootApplication
+@ComponentScan(basePackages = {"com.example"})
+public class ProductappClientApplication {
+
+	public static void main(String[] args) {
+		SpringApplication.run(ProductappClientApplication.class, args);
+		
+	}
+	
+	@Bean
+	public RestTemplate restTemplate() {
+		return new RestTemplate();
+	}
+
+}
+
+Service:
+
+@Service
+public class ProductApiService {
+	
+	@Autowired
+	private RestTemplate restTemplate;
+	
+	//now we will call our API with the help pf restTemplate
+	
+	public Product getById(int id) {
+		return restTemplate.getForObject("http://localhost:9090/productapp/api/products/"+id, Product.class);
+	}
+
+}
+
+@Controller
+
+@RestController
+public class ProductApiClientController {
+	
+	@Autowired
+	private ProductApiService productApiService;
+	
+	
+	@GetMapping(path="productclient/{id}")
+	public Product getProduct(@PathVariable int id) {
+		return productApiService.getById(id);
+	}
+	
+	
+
+}
+
+
+Applying 15-Factor Principles
+#	Principle	How it applies to Banking App
+1	Codebase	Each service (Auth, Account, etc.) has its own Git repo
+2	Dependencies	Each service declares its own libraries (e.g., Spring Boot, PostgreSQL driver)
+3	Config	DB URL, JWT secret, API keys stored in Kubernetes secrets or ENV variables
+4	Backing Services	PostgreSQL (Account DB), RabbitMQ (transaction queue), Email API – all pluggable
+5	Build, Release, Run	Build each service as a Docker image → Release with version → Run via container
+6	Processes	All services are stateless, store data in DB or Redis (not in memory)
+7	Port Binding	Each service exposes its own REST APIs on a dedicated port
+8	Concurrency	To scale: deploy 3 instances of Transaction Service to handle more load
+9	Disposability	Services can be restarted/redeployed anytime with zero side effects
+10	Dev/Prod Parity	Use Docker Compose for local dev, Kubernetes in production—same config patterns
+11	Logs	All services log to stdout → sent to centralized system like ELK or Loki
+12	Admin Processes	Run DB migrations using scripts or Flyway as one-time jobs
+13	API First	Define OpenAPI/Swagger docs first for all services (Contract-first design)
+14	Telemetry	Use Prometheus + Grafana to monitor API response times, DB usage, etc.
+15	Authentication & Authorization	Use OAuth2 / JWT for secure service-to-service and user communication
+
+
+
+
+
+
