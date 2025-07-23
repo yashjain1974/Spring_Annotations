@@ -171,14 +171,42 @@ Dependency:
 --------------------------------Bean-----------------------------------
 
 
+@Bean
+-->Follows Singleton design pattern
+-->the class must not be final
+-->Infrastructure bean
+
+Caching
+
+@Configuration
+@EnableCaching
+public class CachingConfig {
+	
+	//In memeory cache
+	@Bean
+	public CacheManager cacheManager() {
+		ConcurrentMapCacheManager cacheManager=new ConcurrentMapCacheManager("products");
+		return cacheManager;
+	}
+
+}
 
 
 
+@Log4j2 --> For logging
+@Scheduled(cron = "0/3 * * * * *")
+
+-->to invalidate cache
+@CacheEvict(value="products", allEntries=true)
+	public void invalidate() {}
 
 
+----------------Actuator-----------------------
 
+// Download dependency of spring tool actuator
 
-
+management.endpoints.web.exposure.include=* -->For actutator
+management.endpoints.jmx.exposure.include=* -->for jmx connection use in cmd jconsole
 
 
 
