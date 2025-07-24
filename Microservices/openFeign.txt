@@ -1,9 +1,9 @@
 ----------Open Feign-----------
 In main app
-
-
 @EnableFeignClients("package com.app_A.proxyservice")
 
+
+ProxyServie: 
 
 @FeignClient(url="http://localhost:8081",name="product-client")
 public interface ProductProxyService {
@@ -85,6 +85,10 @@ Applying 15-Factor Principles
 13	API First	Define OpenAPI/Swagger docs first for all services (Contract-first design)
 14	Telemetry	Use Prometheus + Grafana to monitor API response times, DB usage, etc.
 15	Authentication & Authorization	Use OAuth2 / JWT for secure service-to-service and user communication
+
+
+
+
 
 
 

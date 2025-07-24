@@ -1,0 +1,79 @@
+a Eureka Server is a service discovery tool specifically designed for microservices architectures. In a microservices environment, you have many small, independent services that need to communicate with each other. The locations (IP addresses and ports) of these services can change frequently as they are scaled up, down, or restarted
+
+@EnableEurekaServer
+
+
+in application.yaml
+
+This YAML file configures a Spring Boot application to act as a standalone Eureka Server.
+
+
+spring:
+  application:
+    name: eurekaServer
+server:
+  port: 8070
+eureka:
+  instance:
+    hostname: localhost
+  client:
+    fetch-registry: false
+    register-with-eureka: false
+    service-url:
+      defaultZone:  http://${eureka.instance.hostname}:${server.port}/eureka/
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  health:
+    readinessstate:
+      enabled: true
+    livenessstate:
+      enabled: true
+  endpoint:
+    health:
+      probes:
+        enabled: true
+
+
+configures the Eureka-specific behavior.
+
+instance.hostname: localhost: The server's address is localhost.
+
+client.fetch-registry: false: The server will not try to fetch a list of services from another Eureka server.
+
+client.register-with-eureka: false: The server will not register itself with another Eureka server. These two false settings are what make it a standalone server; it doesn't look for peers.
+
+service-url.defaultZone: This defines the address that other microservices (Eureka clients) should use to find and register with this server.
+
+
+This section configures the Eureka-specific behavior.
+
+instance.hostname: localhost: The server's address is localhost.
+
+client.fetch-registry: false: The server will not try to fetch a list of services from another Eureka server.
+
+client.register-with-eureka: false: The server will not register itself with another Eureka server. These two false settings are what make it a standalone server; it doesn't look for peers.
+
+service-url.defaultZone: This defines the address that other microservices (Eureka clients) should use to find and register with this server.
+
+
+
+----------->>> Add this to client yaml files
+
+eureka:
+  client:
+    fetch-registry: true
+    register-with-eureka: true
+    service-url:
+      defaultZone: http://localhost:8070/eureka/
+
+
+Then we can use logical name for microservice url
+
+@FeignClient("COUPONS")
+
+instead of
+
+//@FeignClient(name = "coupon-service", url = "http://localhost:8083")
