@@ -1,3 +1,6 @@
+----------------------Eureka Server-----------------------------------------
+
+
 a Eureka Server is a service discovery tool specifically designed for microservices architectures. In a microservices environment, you have many small, independent services that need to communicate with each other. The locations (IP addresses and ports) of these services can change frequently as they are scaled up, down, or restarted
 
 @EnableEurekaServer
@@ -77,3 +80,13 @@ Then we can use logical name for microservice url
 instead of
 
 //@FeignClient(name = "coupon-service", url = "http://localhost:8083")
+
+
+
+
+
+
+
+
+
+

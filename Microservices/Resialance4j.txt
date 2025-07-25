@@ -1,0 +1,50 @@
+---------------------------Resilience4j-------------------
+
+
+Resilience4j is used in a Spring Boot microservice architecture to make your services fault-tolerant, resilient, and responsive under failure conditions — especially when calling other microservices (like using Feign or RestTemplate).
+
+Resilience4j solves this by applying patterns like:
+
+Pattern	What It Does
+✅ Circuit Breaker	Prevents repeated calls to failing services.
+⏱️ Time Limiter	Fails fast when a service is too slow.
+♻️ Retry	Retries failed calls with a delay.
+📉 Rate Limiter	Limits number of calls per second.
+🧳 Bulkhead	Limits number of concurrent calls (like thread pools).
+
+
+
+Download dependency
+
+		<dependency>
+			<groupId>org.springframework.cloud</groupId>
+			<artifactId>spring-cloud-starter-circuitbreaker-resilience4j</artifactId>
+		</dependency>
+
+
+
+
+@FeignClient(name="COUPONS",fallback=CouponServiceFallback.class)
+//This is hardcoded
+//@FeignClient(name = "coupon-service", url = "http://localhost:8083")
+public interface CouponServiceProxy {
+    @GetMapping("coupon/{couponCode}")
+    public Coupon getCouponByCode(@PathVariable String couponCode);
+}
+
+
+@Component
+public class CouponServiceFallback implements CouponServiceProxy{
+
+	@Override
+	public Coupon getCouponByCode(String couponCode) {
+		// TODO Auto-generated method stub
+		return new Coupon("SUP05",5,LocalDateTime.now());
+	}
+	
+
+}
+
+
+
+

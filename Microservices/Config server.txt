@@ -1,0 +1,73 @@
+--------------------------------------- Config server------------------------------------
+
+A Spring Cloud Config Server is a centralized configuration service for microservices.
+
+Instead of storing application.yml or application.properties inside each microservice, you store all configurations in one place (usually a Git repo), and the Config Server serves those to your services at runtime.
+
+
+
+@EnableConfigServer
+
+Dependency :
+
+		<dependency>
+			<groupId>org.springframework.cloud</groupId>
+			<artifactId>spring-cloud-config-server</artifactId>
+		</dependency>
+
+
+
+application.yml
+
+eureka:
+  instance:
+    prefer-ip-address: true
+  client:
+    register-with-eureka: true
+    fetch-registry: true
+    service-url:
+      defaultZone: http://localhost:8070/eureka/
+    
+spring:
+  cloud:
+    config:
+      server:
+        git:
+          uri: file:///C:/JavaLabs/spring boot/propfiles
+          clone-on-start: true
+          default-label: master
+
+  application:
+    name: configserver
+server:
+  port: 8888
+
+
+
+In services which we want to configure add this line to 
+
+ config:
+    import: optional:configserver:http://localhost:8888
+
+http://localhost:8888/coupons/default
+
+
+---> to refresh 
+
+
+Restart kiye bina change  pick krr le 
+
+@RefreshScope
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: refresh
+
+to refresh
+
+http://localhost:8083/actuator/refresh
+
+
+
