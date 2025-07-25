@@ -1,0 +1,66 @@
+Here's a brief explanation of Prometheus and Grafana:
+
+------Prometheus-----:
+
+What it is: A powerful, open-source system for collecting and storing metrics (numerical measurements like CPU usage, request count, error rates) from your applications and infrastructure.
+
+How it works: It "pulls" (scrapes) metrics from your services at regular intervals, stores them in its own time-series database, and allows you to query them using a special language called PromQL. It can also trigger alerts.
+
+Analogy: Think of Prometheus as the highly efficient librarian who goes around collecting and cataloging all the performance numbers from every corner of your system.
+
+-------Grafana--------:
+
+What it is: An open-source platform for visualizing and analyzing data, especially metrics from Prometheus (but also logs and traces from other sources).
+
+How it works: It connects to data sources like Prometheus, then lets you build interactive, customizable dashboards with graphs, charts, and tables to display your metrics in an understandable way. It also has its own alerting capabilities.
+
+Analogy: Think of Grafana as the expert data journalist who takes all the raw numbers from the librarian (Prometheus) and transforms them into compelling stories (dashboards) that anyone can understand and act upon.
+
+Together (Briefly): Prometheus gathers the performance data, and Grafana presents that data visually in dashboards, helping you monitor, understand, and troubleshoot your systems.
+
+------------Start------------
+
+Start prometheus
+./prometheus 
+
+4.start grafana:
+ bin/grafana-server
+ http://localhost:9090
+up
+
+grafana dashboard
+http://localhost:3000/
+
+Dashboard-> new import -> grafana dashboard id -->put that id---> ui is created
+
+
+Dependency:
+
+		<dependency>
+			<groupId>io.micrometer</groupId>
+			<artifactId>micrometer-registry-prometheus</artifactId>
+		</dependency>
+
+application.yaml
+
+server:
+  port: 8080
+management:
+  endpoints:
+    web:
+      base-path: /actuator
+      exposure:
+        include: "*"
+  endpoint:
+    prometheus:
+      enabled: true
+    metrics:
+      enabled: true
+
+Prometheus.yml
+
+ - job_name: 'spring-actuator'
+    metrics_path: '/actuator/prometheus'
+    scrape_interval: 5s
+    static_configs:
+    - targets: ['localhost:8080']

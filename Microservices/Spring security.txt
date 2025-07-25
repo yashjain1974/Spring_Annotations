@@ -1,0 +1,143 @@
+What is Spring Security?
+At its core, Spring Security is a powerful and highly customizable authentication and authorization framework for Java applications. It integrates seamlessly with Spring Boot, making it the de-to-facto choice for securing Spring-based applications, including microservices.
+
+Think of it as having two main jobs:
+
+Authentication (Who are you?): Verifying the identity of a user or another service. This is like checking an ID at the entrance.
+
+Examples: Username/password login, API keys, digital certificates, tokens (like JWTs).
+
+Authorization (What are you allowed to do?): Determining what an authenticated user or service is permitted to access or perform. This is like checking your ticket or credentials to see which rooms you can enter or which actions you can perform.
+
+Examples: Role-based access control (RBAC), attribute-based access control (ABAC).
+
+Spring Security works using a chain of filters that intercept HTTP requests. As a request comes in, it passes through these filters, each performing a specific security check (e.g., checking for a valid token, authenticating credentials). If all checks pass, the request proceeds to your application's logic. If any check fails, the request is rejected.
+
+
+
+
+Install Spring Security dependency
+
+
+Make AppConfig file where we need to configure our user:
+
+
+@Configuration
+@EnableWebSecurity // To enable customization of spring security
+@EnableMethodSecurity(prePostEnabled = true)
+public class AppConfig {
+	// authenticate , What are the user and what are there password
+
+//	@Bean
+//	public UserDetailsService userDetailsService(PasswordEncoder passwordEncoder) {
+//		UserDetails yash = User.withUsername("yash").password("yash").roles("ADMIN").build();
+//		UserDetails manik = User.withUsername("manik").password("manik").roles("MGR").build();
+//		UserDetails mahiman = User.withUsername("mahiman").password("mahiman").roles("CLERK").build();
+//
+//		return new InMemoryUserDetailsManager(yash, manik, mahiman);
+//
+//	}
+	@Autowired
+	private UserDetailsService detailsService;
+
+	@Bean
+	public DaoAuthenticationProvider authenticationProvider(PasswordEncoder passwordEncoder) {
+		DaoAuthenticationProvider authenticationProvider = new DaoAuthenticationProvider();
+
+		authenticationProvider.setPasswordEncoder(passwordEncoder);
+
+		authenticationProvider.setUserDetailsService(detailsService);
+		return authenticationProvider;
+	}
+
+	@Bean
+	public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
+		return httpSecurity.csrf(AbstractHttpConfigurer::disable).cors(AbstractHttpConfigurer::disable)
+				.authorizeHttpRequests(reg -> reg.anyRequest().authenticated()).httpBasic(Customizer.withDefaults())
+				.sessionManagement(con -> con.sessionCreationPolicy(SessionCreationPolicy.STATELESS)).build();
+
+	}
+
+//	@Bean
+//	public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
+//		return httpSecurity.csrf(AbstractHttpConfigurer::disable).cors(AbstractHttpConfigurer::disable)
+//				.authorizeHttpRequests(reg -> reg.requestMatchers("/admin/**").hasAnyRole("CLERK", "ADMIN", "MGR")
+//						.requestMatchers("/mgr/**").hasAnyRole("ADMIN", "MGR").requestMatchers("/clerk/**")
+//						.hasAnyRole("CLERK").requestMatchers("/home/**").permitAll().anyRequest()
+//						.authenticated())
+//				.httpBasic(Customizer.withDefaults())
+//				.sessionManagement(con -> con.sessionCreationPolicy(SessionCreationPolicy.STATELESS)).build();
+//
+//	}
+
+	@Bean // Hey spring security done expect password encoding
+	public PasswordEncoder passwordEncoder() {
+		return new BCryptPasswordEncoder();
+	}
+
+}
+Let's break down Spring Security in a simple way, like a bouncer at a club, and then we'll look at a diagram.
+
+Layman's Example: The "Cool Club" Analogy for Spring Security
+Imagine your web application is a very exclusive, popular "Cool Club." People (users) want to get in and access different areas (web pages, functionalities) of the club.
+
+Here's how Spring Security acts as the club's security system:
+
+1. The Bouncer (Spring Security Filter Chain):
+
+When someone approaches the club's entrance (sends a request to your web application), they first encounter the Bouncer.
+
+The Bouncer isn't just one person; it's a team (a "chain" of security filters). Each team member has a specific job.
+
+2. The ID Checker (Authentication Filter):
+
+The first Bouncer in the chain is the "ID Checker."
+
+You (the user) provide your ID and Secret Knock (username and password).
+
+The ID Checker doesn't know everyone personally. So, what does he do?
+
+3. The "Membership Roster" Manager (UserDetailsService):
+
+The ID Checker calls over to the "Membership Roster" Manager.
+
+You (the developer) told the "Membership Roster" Manager how to find people on the roster. For example, "Go to the big book in the back labeled 'Members' and look up their name." (This is your UserDetailsService telling Spring Security how to fetch user data from your database).
+
+The Membership Roster Manager finds your name and gets your actual secret knock from the roster (your hashed password).
+
+4. The Secret Knock Verifier (PasswordEncoder):
+
+The Membership Roster Manager then gives your provided "secret knock" and the "actual secret knock" from the roster to the "Secret Knock Verifier."
+
+The Verifier checks if the secret knock you provided matches the one on file. (This is your PasswordEncoder comparing the plaintext password you typed with the hashed password from the database).
+
+If they match, great! If not, "Access Denied!" (Authentication failure).
+
+5. The "Approved Member List" (SecurityContextHolder):
+
+If your ID and secret knock are valid, the Bouncer's team stamps your hand with a special invisible ink mark. This mark signifies you are an "Approved Member."
+
+This "Approved Member" status, along with any special privileges you have, is written down on a temporary note that follows you around inside the club. (This is the SecurityContextHolder holding your Authentication object, which contains your UserDetails and authorities).
+
+6. The "Velvet Rope" Guards (Authorization):
+
+Now you're inside the club. But wait, there are different areas:
+
+The "VIP Lounge" (e.g., /admin pages)
+
+The "Dance Floor" (e.g., /dashboard page)
+
+The "Restrooms" (e.g., /public pages)
+
+At each velvet rope, there's another Bouncer – a "Velvet Rope Guard."
+
+The Guard checks your invisible ink mark for special privileges (roles/authorities). For example, if your mark says "VIP Access," you can enter the VIP Lounge. If it just says "Member," you can go to the Dance Floor, but not the VIP Lounge.
+
+You (the developer) told these Guards which privileges are needed for each area. (This is how you configure authorization rules, e.g., @PreAuthorize("hasRole('ADMIN')") or using URL patterns in your security configuration).
+
+7. Staying Logged In (Session Management):
+
+Once your hand is stamped, you don't need to show your ID and do the secret knock every time you move between areas within the club during the same visit. The bouncers just check your hand.
+
+Similarly, once you're authenticated in Spring Security, a session is established, and your "Approved Member" status is remembered for subsequent requests until you log out or your session expires.
+

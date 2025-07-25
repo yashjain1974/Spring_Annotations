@@ -1,0 +1,55 @@
+Micrometer: The modern, vendor-agnostic API for metrics and observations, which is now the foundation for distributed tracing in Spring Boot. It enables log tracing by providing the trace and span IDs.
+
+Zipkin: The backend system for storing, visualizing, and analyzing distributed traces. It helps you see the end-to-end flow of requests.
+
+Spring Cloud Sleuth: The legacy Spring-specific library for distributed tracing and log correlation (now replaced by Micrometer Tracing in Spring Boot 3+). Its role was to generate and propagate trace IDs and inject them into logs.
+
+
+--------------------To download Dependecy for log tracing----------
+
+Step 1:
+pull using docker
+-----------------------
+docker pull openzipkin/zipkin:2.23
+docker run -p 9411:9411 openzipkin/zipkin:2.23
+
+or download using powershell
+------------------------------
+curl https://repo1.maven.org/maven2/io/zipkin/zipkin-server/2.24.2/zipkin-server-2.24.2-exec.jar -o zipkin.jar
+or
+Invoke-WebRequest -Uri https://repo1.maven.org/maven2/io/zipkin/zipkin-server/2.24.4/zipkin-server-2.24.4-exec.jar -OutFile zipkin.jar
+
+java -jar zipkin.jar
+
+
+<dependency>
+    <groupId>io.micrometer</groupId>
+    <artifactId>micrometer-observation</artifactId>
+</dependency>
+
+<dependency>
+    <groupId>io.micrometer</groupId>
+    <artifactId>micrometer-tracing-bridge-otel</artifactId>
+</dependency>
+
+<dependency>
+    <groupId>io.opentelemetry</groupId>
+    <artifactId>opentelemetry-exporter-zipkin</artifactId>
+</dependency>
+
+<dependency>
+	<groupId>io.github.openfeign</groupId>
+	<artifactId>feign-micrometer</artifactId>
+</dependency>
+
+
+Step 3: add tracing sampling to each project:
+---------------------------------------
+management:
+  tracing:
+    sampling:
+      probability: 1.0
+	    
+logging:
+  pattern:
+    level: "%5p [${spring.application.name:},%X{traceId:-},%X{spanId:-}]"
