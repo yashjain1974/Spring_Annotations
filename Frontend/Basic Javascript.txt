@@ -1,0 +1,73 @@
+JavaScript is one of the most widely used programming languages in the world, primarily known for powering interactive web experiences. Its history is marked by rapid evolution and significant milestones.
+
+
+The Birth (1995):
+
+Creator: Brendan Eich, while working at Netscape Communications Corporation.
+
+Timeline: Eich developed the initial version in just 10 days.
+
+Original Names: It was first called "Mocha," then briefly "LiveScript."
+
+Renaming to JavaScript: The name was changed to JavaScript in December 1995 to capitalize on the rising popularity of Java, even though the languages are fundamentally different.
+
+Initial Purpose: To add dynamic and interactive features to static web pages within the Netscape Navigator browser.
+
+
+
+The Event Loop is a fundamental concept in JavaScript's concurrency model, allowing it to perform non-blocking I/O operations despite being single-threaded. It's the mechanism that enables JavaScript to handle asynchronous tasks like network requests, user interactions, and timers without freezing the main thread.
+
+To understand the Event Loop, let's first consider why it's necessary:
+
+JavaScript is Single-Threaded: Unlike some other languages that use multiple threads for concurrent operations, JavaScript traditionally executes code in a single thread. This means it can only do one thing at a time.
+
+Blocking Operations are Bad: If JavaScript were to perform long-running operations (like fetching data from an API or reading a large file) synchronously, the entire browser or Node.js application would become unresponsive until that operation completed. This leads to a terrible user experience.
+
+The Event Loop solves this by working with a few key components:
+
+Call Stack (or Execution Stack):
+
+This is where JavaScript code is executed. When a function is called, it's pushed onto the stack. When it returns, it's popped off.
+
+It's a LIFO (Last-In, First-Out) structure.
+
+JavaScript can only execute one item on the call stack at a time. If the call stack is not empty, the Event Loop cannot run.
+
+Web APIs (Browser) / C++ APIs (Node.js):
+
+These are capabilities provided by the browser environment (like setTimeout, setInterval, fetch, XMLHttpRequest, DOM events like click) or the Node.js runtime (like fs for file system operations, http for network requests).
+
+They are not part of the JavaScript engine itself but are exposed to JavaScript.
+
+When an asynchronous function is called (e.g., setTimeout(callback, 0) or fetch(url)), it's handed over to the respective Web API or C++ API to be handled. The JavaScript engine itself doesn't wait for these operations to complete.
+
+Callback Queue (or Message Queue / Task Queue):
+
+When an asynchronous operation (like a setTimeout timer expiring, a fetch request completing, or a click event occurring) finishes its work in the Web API/C++ API, its associated callback function is placed into this queue.
+
+This queue is a FIFO (First-In, First-Out) structure.
+
+Microtask Queue (or Job Queue):
+
+Introduced with ES6 Promises and async/await.
+
+This queue has a higher priority than the Callback Queue.
+
+Callbacks from Promises (.then(), .catch(), .finally()) and async/await functions are placed here.
+
+Crucially, the Event Loop checks and empties the Microtask Queue before it moves to the Callback Queue in each iteration.
+
+How the Event Loop Works (The Cycle):
+
+The Event Loop is a continuously running process that constantly monitors the Call Stack and the queues:
+
+Execute Call Stack: The Event Loop continuously checks if the Call Stack is empty.
+
+Process Microtasks: If the Call Stack is empty, the Event Loop then checks the Microtask Queue. It processes and executes all microtasks in the queue until it's empty. This is why promises often resolve before setTimeout(..., 0) callbacks.
+
+Process Callbacks: After the Microtask Queue is empty (and only if the Call Stack is still empty), the Event Loop then checks the Callback Queue. It takes the first callback from this queue and pushes it onto the Call Stack for execution.
+
+Repeat: This cycle repeats indefinitely.
+
+
+
