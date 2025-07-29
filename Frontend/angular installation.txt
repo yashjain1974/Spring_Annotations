@@ -1,0 +1,16 @@
+Microsoft Windows [Version 10.0.26100.4652]
+(c) Microsoft Corporation. All rights reserved.
+
+C:\Users\Yash Jain>node -v
+v22.17.0
+
+C:\Users\Yash Jain>npm -v
+10.9.2
+
+C:\Users\Yash Jain>npm -v
+10.8.2
+
+C:\Users\Yash Jain>node -v
+v20.19.4
+
+C:\Users\Yash Jain>npm install -g @angular/cli@18.0.0

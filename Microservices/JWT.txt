@@ -1,0 +1,6 @@
+1) Create and assign the token to the user
+
+2) When user pass 
+
+
+oAuth: Delegate Authorization protocol

@@ -1,0 +1,113 @@
+Keycloak is widely used in microservice architectures to handle authentication and authorization in a centralized and secure way.
+
+
+
+Client Credential grant type
+
+https://www.keycloak.org/archive/downloads-24.0.4.html
+
+bin\kc.bat start-dev
+http://localhost:8080
+
+In first run, it will prompt:
+---------------------------
+Please create an initial admin user:
+	You must enter:
+	Username
+	Password
+	
+step 2: register client application with keycloak server:
+---------------------------------------------------
+client -> create client -> openid connect
+
+provide:
+cc: client credential
+
+grant_type: client credential
+
+client id: busycoder-cc
+
+client name: busycoder-cc-app
+
+client secret:   AWQVHkOmU89k7Orsms6A4QHnKm5hgbz1
+
+
+scope: 
+
+enable client authentication--->auth flow --> service accounts roles (other dont select)
+				two application try to communicate each other
+				
+copy client secret:   AWQVHkOmU89k7Orsms6A4QHnKm5hgbz1
+
+
+
+In postman 
+
+POST
+http://localhost:8080/realms/master/protocol/openid-connect/token
+
+
+body-->x-www-form
+
+grant_type: client credential
+
+client id: busycoder-cc
+
+client secret:   AWQVHkOmU89k7Orsms6A4QHnKm5hgbz1
+
+scope: openid email profile
+
+
+
+
+
+In gateway resource
+
+
+
+dependency
+
+  <dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-security</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.security</groupId>
+			<artifactId>spring-security-oauth2-resource-server</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.security</groupId>
+			<artifactId>spring-security-oauth2-jose</artifactId>
+		</dependency>
+
+
+yaml file
+
+spring:
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          jwk-set-uri: "http://localhost:7080/realms/master/protocol/openid-connect/certs"
+
+
+step 5: add configuration to customized security
+
+@Configuration
+@EnableWebFluxSecurity
+public class SecurityConfig {
+    @Bean
+    public SecurityWebFilterChain springSecurityFilterChain(ServerHttpSecurity serverHttpSecurity) {
+        serverHttpSecurity.authorizeExchange(exchanges -> exchanges.pathMatchers(HttpMethod.GET).authenticated()
+                .pathMatchers("/busycoder/accounts/**").authenticated()
+                .pathMatchers("/busycoder/cards/**").authenticated()
+                .pathMatchers("/busycoder/loans/**").authenticated())
+                .oauth2ResourceServer(oAuth2ResourceServerSpec -> oAuth2ResourceServerSpec
+                        .jwt(Customizer.withDefaults()));
+        serverHttpSecurity.csrf(csrfSpec -> csrfSpec.disable());
+        return serverHttpSecurity.build();
+    }
+}
+
+
+

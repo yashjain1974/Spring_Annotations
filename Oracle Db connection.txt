@@ -1,0 +1,72 @@
+CREATE PLUGGABLE DATABASE USER_PDB ADMIN USER user_admin IDENTIFIED BY "AdminPass1"
+  FILE_NAME_CONVERT = ('C:\ORCLDB\ORADATA\ORCL\PDBSEED\', 'C:\ORCLDB\ORADATA\USER_PDB\');
+
+-- =================================================================
+-- Script to Create Isolated Pluggable Databases for Bank Microservices
+-- =================================================================
+-- Run this script as a DBA user (e.g., SYS) connected to the root container (CDB).
+--
+-- IMPORTANT: ORA-65016 FIX
+-- You must replace the placeholder paths in the FILE_NAME_CONVERT clauses below.
+-- Find your data file location with a query like: SELECT name FROM v$datafile;
+-- Then, replace '/path/to/oradata/pdbseed/' with the path to your seed database files
+-- and '/path/to/oradata/NEW_PDB_NAME/' with the desired location for the new PDB files.
+-- For Oracle XE on Linux, the seed path is often '/opt/oracle/oradata/XE/pdbseed/'.
+-- For Oracle XE on Windows, it might be 'C:\app\oracle\oradata\XE\pdbseed\'.
+-- =================================================================
+
+-- 1. User/Authentication Service
+CREATE PLUGGABLE DATABASE USER_PDB ADMIN USER user_admin IDENTIFIED BY "AdminPass1"
+  FILE_NAME_CONVERT = ('/path/to/oradata/pdbseed/', '/path/to/oradata/USER_PDB/');
+ALTER PLUGGABLE DATABASE USER_PDB OPEN;
+ALTER SESSION SET CONTAINER = USER_PDB;
+CREATE USER USER_MS IDENTIFIED BY "user123";
+GRANT CONNECT, RESOURCE TO USER_MS;
+ALTER SESSION SET CONTAINER = CDB$ROOT;
+
+-- 2. Account Service
+CREATE PLUGGABLE DATABASE ACCOUNT_PDB ADMIN USER account_admin IDENTIFIED BY "AdminPass2"
+  FILE_NAME_CONVERT = ('/path/to/oradata/pdbseed/', '/path/to/oradata/ACCOUNT_PDB/');
+ALTER PLUGGABLE DATABASE ACCOUNT_PDB OPEN;
+ALTER SESSION SET CONTAINER = ACCOUNT_PDB;
+CREATE USER ACCOUNT_MS IDENTIFIED BY "account123";
+GRANT CONNECT, RESOURCE TO ACCOUNT_MS;
+ALTER SESSION SET CONTAINER = CDB$ROOT;
+
+-- 3. Transaction Service
+CREATE PLUGGABLE DATABASE TRANSACTION_PDB ADMIN USER transaction_admin IDENTIFIED BY "AdminPass3"
+  FILE_NAME_CONVERT = ('/path/to/oradata/pdbseed/', '/path/to/oradata/TRANSACTION_PDB/');
+ALTER PLUGGABLE DATABASE TRANSACTION_PDB OPEN;
+ALTER SESSION SET CONTAINER = TRANSACTION_PDB;
+CREATE USER TRANSACTION_MS IDENTIFIED BY "transaction123";
+GRANT CONNECT, RESOURCE TO TRANSACTION_MS;
+ALTER SESSION SET CONTAINER = CDB$ROOT;
+
+-- 4. Notification Service
+CREATE PLUGGABLE DATABASE NOTIFICATION_PDB ADMIN USER notification_admin IDENTIFIED BY "AdminPass4"
+  FILE_NAME_CONVERT = ('/path/to/oradata/pdbseed/', '/path/to/oradata/NOTIFICATION_PDB/');
+ALTER PLUGGABLE DATABASE NOTIFICATION_PDB OPEN;
+ALTER SESSION SET CONTAINER = NOTIFICATION_PDB;
+CREATE USER NOTIFICATION_MS IDENTIFIED BY "notification123";
+GRANT CONNECT, RESOURCE TO NOTIFICATION_MS;
+ALTER SESSION SET CONTAINER = CDB$ROOT;
+
+-- 5. Loan Service
+CREATE PLUGGABLE DATABASE LOAN_PDB ADMIN USER loan_admin IDENTIFIED BY "AdminPass5"
+  FILE_NAME_CONVERT = ('/path/to/oradata/pdbseed/', '/path/to/oradata/LOAN_PDB/');
+ALTER PLUGGABLE DATABASE LOAN_PDB OPEN;
+ALTER SESSION SET CONTAINER = LOAN_PDB;
+CREATE USER LOAN_MS IDENTIFIED BY "loan123";
+GRANT CONNECT, RESOURCE TO LOAN_MS;
+ALTER SESSION SET CONTAINER = CDB$ROOT;
+
+-- 6. Card Service
+CREATE PLUGGABLE DATABASE CARD_PDB ADMIN USER card_admin IDENTIFIED BY "AdminPass6"
+  FILE_NAME_CONVERT = ('/path/to/oradata/pdbseed/', '/path/to/oradata/CARD_PDB/');
+ALTER PLUGGABLE DATABASE CARD_PDB OPEN;
+ALTER SESSION SET CONTAINER = CARD_PDB;
+CREATE USER CARD_MS IDENTIFIED BY "card123";
+GRANT CONNECT, RESOURCE TO CARD_MS;
+ALTER SESSION SET CONTAINER = CDB$ROOT;
+
+-- Script finished. All PDBs and users are created.
