@@ -98,3 +98,57 @@ It's important to distinguish between AngularJS (Angular 1.x) and Angular (Angul
 
 
 In summary, Angular provides a robust and comprehensive platform for building large, scalable, and maintainable single-page web applications. Its structured approach, strong tooling, and integration with TypeScript make it a popular choice for enterprise-level projects.
+
+
+-----------------------Angular structure-----------------------
+
+import { Component } from '@angular/core';
+import { RouterOutlet } from '@angular/router';
+
+@Component({
+  selector: 'app-root',
+  standalone: true,
+  imports: [RouterOutlet],
+  templateUrl: './app.component.html',
+  styleUrl: './app.component.css'
+})
+export class AppComponent {
+  title = 'test-app';
+}
+
+
+
+
+
+import { Component, OnInit } from '@angular/core';
+
+@Component({
+  selector: 'app-test',
+  standalone: true,
+  imports: [],
+  template: `
+ {{userName}}
+ <button (click)=myevent()>Toggle</button>
+ {{count}}`,
+  styleUrl: './test.component.css'
+})
+
+
+export class TestComponent implements OnInit {
+
+  userName:string='raj';
+  
+  isHidden:boolean=false;
+  constructor() { }
+
+  myevent(){
+    this.count++;
+  }
+
+  ngOnInit() {
+  }
+
+}
+
+
+

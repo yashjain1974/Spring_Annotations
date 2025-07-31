@@ -1,0 +1,108 @@
+
+
+
+const express = require('express');
+const mongoose = require('mongoose');
+const bodyParser = require('body-parser');
+const Book1 = require('./Book.model');
+
+const app = express();
+const port = 8080;
+const dbURI = 'mongodb://localhost:27017/ora123'; // Better to specify port
+
+// Middleware
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
+
+// Connect to MongoDB using modern promise-based approach
+mongoose.connect(dbURI)
+  .then(() => console.log('MongoDB connected...'))
+  .catch(err => console.error('MongoDB connection error:', err));
+
+// Root route
+app.get('/', (req, res) => {
+  res.send('happy to be here');
+});
+
+// Get all books
+app.get('/book', async (req, res) => {
+  try {
+    const books = await Book.find({});
+    res.setHeader('Cache-Control', 'no-cache, no-store');
+    res.json(books);
+  } catch (err) {
+    res.status(500).send(err.message);
+  }
+});
+
+// Get book by ID
+app.get('/book/:id', async (req, res) => {
+  try {
+    const book = await Book.findById(req.params.id);
+    res.json(book);
+  } catch (err) {
+    res.status(500).send(err.message);
+  }
+});
+
+// Add new book
+app.post('/book', async (req, res) => {
+  try {
+    const newBook = new Book(req.body);
+    const savedBook = await newBook.save();
+    res.json(savedBook);
+  } catch (err) {
+    res.status(500).send(err.message);
+  }
+});
+
+// Update book
+app.put('/book/:id', async (req, res) => {
+  try {
+    const updatedBook = await Book.findByIdAndUpdate(
+      req.params.id,
+      { $set: { title: req.body.title } },
+      { new: true, upsert: true }
+    );
+    res.json(updatedBook);
+  } catch (err) {
+    res.status(500).send(err.message);
+  }
+});
+
+// Delete book
+app.delete('/book/:id', async (req, res) => {
+  try {
+    const deletedBook = await Book.findByIdAndDelete(req.params.id);
+    res.json(deletedBook);
+  } catch (err) {
+    res.status(500).send(err.message);
+  }
+});
+
+
+app.listen(port, () => {
+  console.log(`App listening on port ${port}`);
+});
+
+
+Why async and await are Used Here
+The primary reason for using async and await in this Express route is to handle asynchronous operations, specifically database queries.
+
+Book.find({}) is Asynchronous:
+
+When you interact with a database (like MongoDB in this case, given the Book.find syntax which is common with Mongoose), the query doesn't execute and return results instantly. It involves network communication, disk I/O, and database processing.
+
+These operations are non-blocking. This means that instead of the Node.js process waiting idly for the database to respond, it can go off and do other tasks (like handling other incoming requests) while the database query is in progress.
+
+await for Sequential Execution of Asynchronous Code:
+
+The await keyword pauses the execution of the async function until the promise returned by Book.find({}) resolves (i.e., the database query completes successfully) or rejects (i.e., an error occurs).
+
+Once the promise resolves, the result (the books array) is assigned to the books variable, and the code continues to res.json(books).
+
+If the promise rejects, the try...catch block will catch the error.
+
+async to Enable await:
+
+The async keyword placed before the function definition (async (req, res) => { ... }) indicates that the function will contain asynchronous operations and allows the use of await inside it. An async function implicitly returns a Promise.

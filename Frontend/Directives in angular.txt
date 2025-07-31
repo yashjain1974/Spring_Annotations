@@ -1,0 +1,120 @@
+Directives in angular
+
+1) FormModule --> use to two way binding [()]
+2) CommonModule --> for 
+
+Custom pipe
+
+Step 1: Create Custom Pipe
+------------------------------
+ng g pipe empTitle --standalone
+
+This generates a standalone pipe.
+
+
+
+Step 2: Implement Pipe Logic
+--------------------------------
+import { Pipe, PipeTransform } from '@angular/core';
+
+@Pipe({
+  name: 'empTitle',
+  standalone: true, // Required in Angular 15+
+})
+export class EmpTitlePipe implements PipeTransform {
+
+  transform(value: string, gender: string): string {
+    if (gender.toLowerCase() === 'male') {
+      return 'Mr. ' + value;
+    } else {
+      return 'Miss. ' + value;
+    }
+  }
+}
+
+
+Angular services
+
+ng g s emp
+
+What is an Angular Service?
+------------------------------
+	An Angular service is a reusable class used to share data or logic across components.
+
+Why Use Services?
+-------------------
+	Share data between components
+	Handle API calls (HTTP)
+	Business logic layer
+
+
+
+@Injectable
+
+
+------------------------Code-----------------------------------
+
+
+import { Injectable } from '@angular/core';
+
+@Injectable({
+  providedIn: 'root'
+})
+export class EmpService {
+
+  constructor() { }
+
+  getEmployees() {
+    return [
+      { "id": 1, "name": "Rajev", "salary": 40 },
+      { "id": 2, "name": "Ekta", "salary": 38 },
+      { "id": 3, "name": "Keshav", "salary": 26 },
+      { "id": 4, "name": "Gunika", "salary": 28 },
+      { "id": 5, "name": "Vikas", "salary": 25 }
+    ]
+  }
+}
+
+
+
+
+import { CommonModule } from '@angular/common';
+import { Component, OnInit } from '@angular/core';
+import { EmpService } from '../../service/emp.service';
+
+@Component({
+  selector: 'app-emp',
+  standalone: true,
+  imports: [CommonModule],
+  template: `
+    <table border="1">
+  <tr>
+    <th>ID</th>
+    <th>Name</th>
+    <th>Age</th>
+  </tr>
+  @for (emp of employees; track emp.id) {
+    <tr>
+      <td>{{ emp.id }}</td>
+      <td>{{ emp.name }}</td>
+      <td>{{ emp.salary }}</td>
+    </tr>
+  }
+</table>
+  `,
+  styles: ``
+})
+export class EmpComponent  implements OnInit{
+public employees: any[] = [];
+constructor(private es:EmpService) { 
+  //angular is going to inject the EmpService into this component
+  this.employees = this.es.getEmployees();
+}
+  ngOnInit(): void {
+    // Fetch employees when the component initializes
+    this.employees = this.es.getEmployees();
+  }
+
+}
+
+
