@@ -1,0 +1,35 @@
+At its core, TypeScript is a superset of JavaScript. This means:
+
+All valid JavaScript code is also valid TypeScript code. If you have an existing JavaScript file, you can simply rename it to a .ts extension, and it will generally compile and run as TypeScript.
+
+TypeScript adds additional syntax and features on top of JavaScript. The most significant addition is static typing.
+
+The Problem TypeScript Solves: JavaScript's Dynamic Nature
+
+JavaScript is a dynamically typed language. This means that:
+
+Variables can hold values of any type, and their type can change during runtime. For example, a variable can start as a number, then become a string, and then an object, all within the same execution.
+
+Type errors are often caught only at runtime. If you try to perform an operation on a variable that's not of the expected type (e.g., trying to call a string method on a number), your program will crash or behave unexpectedly when it runs.
+
+While this dynamic nature offers flexibility, it can lead to:
+
+Hard-to-find bugs: Type-related errors might only surface in specific scenarios during testing or even in production, making debugging a nightmare.
+
+Poor code maintainability: As projects grow, it becomes difficult for developers (especially new ones) to understand what types of data functions expect or return, leading to incorrect usage.
+
+Limited tooling support: IDEs have less information to provide intelligent auto-completion, refactoring, and error checking.
+
+How TypeScript Solves It: Static Typing
+
+TypeScript introduces optional static typing. This means you can (and often should) explicitly define the types of your variables, function parameters, and return values.
+
+
+What is Optional Chaining (?.) in TypeScript?
+====================================================
+	
+	Optional chaining allows you to safely access deeply nested 
+	properties without having to check if each level exists.
+	
+	TypeScript's optional chaining (?.) and Java 8's Optional<T> share a similar goal —
+	to help developers handle potentially null or undefined values safely
