@@ -1,0 +1,156 @@
+- applying routing
+
+--To create new route app
+ng new myapp --standalone --routing --style=css
+
+
+Update app.config.ts if route is not configured
+----------------------------
+import { ApplicationConfig } from '@angular/core';
+import { provideRouter } from '@angular/router';
+import { appRoutes } from './app.routes';
+
+export const appConfig: ApplicationConfig = {
+  providers: [provideRouter(appRoutes)]
+};
+
+step 5: check  main.ts.....Make sure this uses appConfig:
+---------------------------------------
+import { bootstrapApplication } from '@angular/platform-browser';
+import { AppComponent } from './app/app.component';
+import { appConfig } from './app/app.config';
+
+bootstrapApplication(AppComponent, appConfig)
+  .catch(err => console.error(err));
+
+
+_______________________________
+
+Introduction to routing?
+__________________________
+	=> web applications can have different sections that corrosponds to 
+	different URLs and supporting those section programmatically is called routing
+
+	=> In simple words, as per url open different angular components is called routing
+
+step 2: create two components 
+------------------------------
+ng g c deptlist -t -s --standalone --skip-tests
+ng g c emplist -t -s --standalone --skip-tests
+ng g c page-not-found -t -s --standalone --skip-tests
+
+-- In app.route.ts
+
+
+import { Routes } from '@angular/router';
+import { DeptlistComponent } from './components/deptlist/deptlist.component';
+import { EmplistComponent } from './components/emplist/emplist.component';
+import { PageNotFoundComponent } from './components/page-not-found/page-not-found.component';
+
+export const routes: Routes = [
+    { path: '', redirectTo: '/departments', pathMatch: 'full' }, // default
+    { path: 'departments', component: DeptlistComponent },
+    { path: 'employees', component: EmplistComponent },
+    { path: '**', component: PageNotFoundComponent } // wildcard
+];
+
+
+step 6: Update app.component.ts to import RouterModule in app.component.ts
+---------------------------------------------------
+@Component({
+  selector: 'app-root',
+  standalone: true,
+  imports: [RouterModule],
+  templateUrl: './app.component.html'
+})
+export class AppComponent {}
+
+-- To navigate to new route in html file
+
+<nav>
+  <a routerLink="/departments">Departments</a> |
+  <a routerLink="/employees">Employees</a>
+</nav>
+
+<router-outlet></router-outlet>
+
+
+
+
+
+
+
+-----------To navihgate from param urls
+
+import { CommonModule } from '@angular/common';
+import { Component } from '@angular/core';
+import { Router } from '@angular/router';
+
+@Component({
+  selector: 'app-deptlist',
+  standalone: true,
+  imports: [CommonModule],
+  template: `
+    <ul class="item">
+	  <li (click)="onSelect(department)"  *ngFor="let department of departments">
+		<span class="badge">{{department.id}}</span> {{department.name}}
+	  </li>
+	</ul>
+  `,
+  styles: ``
+})
+export class DeptlistComponent {
+
+  constructor(private router: Router) { }
+
+  // onSelect method to navigate to dept-detail component
+  // we need to pass the department id to the dept-detail component
+  // so that we can fetch the details of the department
+  // and display it in the dept-detail component
+  onSelect(department: { id: any; }){
+    // from neviate from code to rooute we need router service
+    this.router.navigate(['/departments', department.id]);
+  }
+  public departments = [
+    { "id": 1, "name": "Angular" },
+    { "id": 2, "name": "Node" },
+    { "id": 3, "name": "MongoDB" },
+    { "id": 4, "name": "Ruby" },
+    { "id": 5, "name": "Bootstrap" }
+  ]
+
+}
+
+
+
+
+
+
+
+-----------To capture parm from url
+
+
+import { Component } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
+
+@Component({
+  selector: 'app-dept-detail',
+  standalone: true,
+  imports: [],
+  template: `
+     <h3>you selected dept with id {{deptId}}</h3>
+  `,
+  styles: ``
+})
+export class DeptDetailComponent {
+  public deptId: any;
+
+  constructor(private route: ActivatedRoute) { }
+
+  ngOnInit() {
+    // tslint:disable-next-line: radix
+    let id = parseInt(this.route.snapshot.paramMap.get('id') ?? '0');
+    this.deptId = id;
+  }
+}
+

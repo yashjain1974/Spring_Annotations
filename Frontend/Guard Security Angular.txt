@@ -1,0 +1,80 @@
+- applying guards routes in angular
+______________________________________
+
+guards routes in angular:
+__________________________
+
+	=> The Angular supports several guards like CanActivate, 
+	CanDeactivate, Resolve, CanLoad, and CanActivateChild. 
+
+	=> These guards help us to secure the route or to perform some actions before navigating 
+	into a route or leaving the route
+
+
+Why guards routes?
+_____________________
+
+	=> Allowing the user to navigate all parts of the application is not a good idea.
+	 We need to restrict the user until the user performs specific actions like login.
+	 Angular provides the Route Guards for this purpose.
+
+	One of the common scenario, where we use Route guards is authentication. 
+	We want our App to stop the unauthorized user from accessing the protected route. 
+	We achieve this by using the CanActivate guard, which angular invokes when the 
+	user tries to navigate into the protected route.
+
+	 Then we hook into the CanActivate guard and use the authentication service to check whether the user is 			
+	 authorized to use the route and if not we can redirect the user to the login page.
+
+
+Uses of  Angular Route Guards
+________________________________
+
+	To Confirm the navigational operation
+	Asking whether to save before moving away from a view
+	Allow access to certain parts of the application to specific users
+	Validating the route parameters before navigating to the route
+	Fetching some data before you display the component
+
+Types of Route Guards
+______________________
+
+The Angular Router supports Five different guards, which you can use to protect the route
+
+
+Step 2: Create Basic Components
+--------------------
+ng g c home -t -s --standalone --skip-tests
+ng g c admin -t -s --standalone --skip-tests
+
+
+
+
+Step 3: Create the Route Guard
+-----------------------
+ng g guard auth/activate --skip-tests
+
+activate.guard.ts
+------------------
+import { CanActivateFn } from '@angular/router';
+export const activateGuard: CanActivateFn = (route, state) => {
+  return true;
+};
+
+
+Step 4: Create a User Service and edit user.service.ts
+------------------------------------------------
+ng g service services/user --skip-tests
+
+
+import { Injectable } from '@angular/core';
+@Injectable({
+  providedIn: 'root'
+})
+export class UserService {
+  isAdminRight(): boolean {
+    // Logic can be based on login token or user role
+    return false; // change to true to allow access
+  }
+}
+
