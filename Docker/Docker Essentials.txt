@@ -1,0 +1,106 @@
+Essential docker commands:
+____________________
+
+
+Checking docker version
+________________________
+docker -v
+docker --version
+
+
+docker info
+___________
+give complete info about docker, how many container runnnig, pause etc
+
+
+docker --help
+______________
+give help about each command
+
+
+docker images
+____________
+give details of all images on local docker installation
+
+
+docker images --help
+
+to delete all containers		docker container rm c0
+------------------------
+docker rm $(docker ps -a -q)
+
+to delete all images:
+----------------------------
+docker rmi $(docker images -q)
+
+delete all docker existing iamages:
+---------------------------------
+ docker rmi -f $(docker images -a -q)
+
+
+for window:
+https://stackoverflow.com/questions/44785585/how-can-i-delete-all-local-docker-images
+
+docker pull
+____________
+docker pull ubuntu:latest		docker image pull ubuntu (new command)
+docker pull --help
+
+
+docker rmi
+___________
+to remove one/more docker images	docker image rm <image-id> (new command)
+docker rmi --help
+
+
+docker ps
+__________
+docker ps -a				docker container ls -a (new commands)
+ it show all container wheter running or not
+
+
+It deletes everything(container , images, cache, etc..)
+____________________________________________________
+docker system prune
+
+
+docker run
+____________
+ docker pull ubuntu:latest
+ docker container run -it ubuntu
+ apt-get update && apt-get install git
+ apt-get install openjdk-11-jdk
+
+ docker run -it ubuntu		docker container run -it ubuntu
+
+
+docker start
+_____________
+ docker start <id>		docker container start <id>
+ 
+docker stop 
+__________
+ docker stop <id>		docker container stop <id>
+
+docker stats
+_______________
+show the status of running container
+docker stats
+
+
+running tomcat image:
+____________________
+docker image pull tomcat:latest
+docker container run -d -p 8080:8080 tomcat
+docker container run -d -p 8090:8080 tomcat
+
+(stop any container that is runnnig on port 8080 in docker)
+
+docker exec -it cid sh
+
+docker container logs -f <id>
+
+
+running container
+____________________
+docker container run --name my_first_con busybox:latest
