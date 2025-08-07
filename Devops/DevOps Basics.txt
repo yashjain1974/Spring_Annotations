@@ -1,0 +1,8 @@
+GAV : GroupId , artifact Id , Version
+
+Maven : 
+
+Gradle
+
+
+CI/CD : Continuous Integration and Continuous Delivery / Deployment

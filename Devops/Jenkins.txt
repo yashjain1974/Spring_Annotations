@@ -1,0 +1,54 @@
+Download war file from Jenkins website
+
+java -jar jenkins.war --httpPort=8090
+
+
+Triggers
+Set up automated actions that start your build based on specific events, like code changes or scheduled times.
+
+Trigger builds remotely (e.g., from scripts)
+?
+
+Build after other projects are built
+?
+
+Build periodically
+?
+Schedule
+?
+
+* * * * *
+
+from crontab guru website
+
+in window command line part
+
+cd C:\hellojava
+javac Hello.java
+java Hello
+
+
+
+
+jenkins : tomcat 9.x
+x.x
+
+Step 1: create spring boot web application with java 17 and spring boot version 2.7.11
+	choose web packaging
+	
+Step 2: run on tomcat 9 without ci/cd
+
+step 3: push project to github
+
+step 4: go to jenkins and install some plugins
+
+
+add some plugin:
+-------------
+maven
+deploy to container plugin
+
+
+<role rolename="manager-gui"/>
+<role rolename="manager-script"/>
+<user username="admin" password="admin" roles="manager-gui,manager-script"/>
